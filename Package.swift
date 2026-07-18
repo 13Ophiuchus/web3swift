@@ -18,9 +18,18 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Web3Core",
-            dependencies: ["BigInt", .product(name: "P256K", package: "swift-secp256k1"), .product(name: "libsecp256k1", package: "swift-secp256k1"), "CryptoSwift"]
-        ),
+			name: "Web3Core",
+			dependencies: [
+				"BigInt",
+				.product(name: "P256K", package: "swift-secp256k1"),
+				.product(name: "libsecp256k1", package: "swift-secp256k1"),
+				"CryptoSwift"
+			],
+			swiftSettings: [
+				.unsafeFlags(["-suppress-warnings"])
+			]
+		),
+
         .target(
             name: "web3swift",
             dependencies: ["Web3Core", "BigInt", .product(name: "P256K", package: "swift-secp256k1")],
