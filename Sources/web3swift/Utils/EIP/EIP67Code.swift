@@ -4,7 +4,9 @@
 //
 
 import Foundation
+#if canImport(CoreImage)
 import CoreImage
+#endif
 import BigInt
 import Web3Core
 
