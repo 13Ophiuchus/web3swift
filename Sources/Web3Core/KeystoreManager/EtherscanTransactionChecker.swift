@@ -1,3 +1,6 @@
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 //
 //  EtherscanTransactionChecker.swift
 //  Created by albertopeam on 28/12/22.

@@ -1,3 +1,4 @@
+#if canImport(WebKit)
 //
 //  Bridge.swift
 //  JSBridge
@@ -245,3 +246,4 @@ fileprivate extension WKWebView {
         evaluateJavaScript(jsString, completionHandler: completionHandler)
     }
 }
+#endif
