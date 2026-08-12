@@ -8,6 +8,10 @@ import FoundationNetworking
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 import BigInt
 import Web3Core
 

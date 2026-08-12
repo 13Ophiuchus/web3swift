@@ -7,6 +7,10 @@ import FoundationNetworking
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 
 public struct EtherscanTransactionChecker: TransactionChecker {
     private let urlSession: URLSessionProxy
