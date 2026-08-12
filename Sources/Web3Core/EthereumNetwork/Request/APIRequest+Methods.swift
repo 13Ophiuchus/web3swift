@@ -1,3 +1,7 @@
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 //
 //  APIRequest+Methods.swift
 //
