@@ -189,27 +189,27 @@ extension Bridge: WKScriptMessageHandler {
 
 public extension WKWebView {
 
-    private struct STPrivateStatic {
-        fileprivate static var bridgeKey = "STPrivateStatic.bridgeKey"
+    private enum STPrivateStatic {
+        fileprivate static var bridgeAssociationKey: UInt8 = 0
     }
 
     /// Bridge for WKWebView and JavaScript. Initialize `lazy`
     var bridge: Bridge {
-        if let bridge = objc_getAssociatedObject(self, &STPrivateStatic.bridgeKey) as? Bridge {
+        if let bridge = objc_getAssociatedObject(self, &STPrivateStatic.bridgeAssociationKey) as? Bridge {
             return bridge
         }
         let bridge = Bridge(webView: self)
-        objc_setAssociatedObject(self, &STPrivateStatic.bridgeKey, bridge, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &STPrivateStatic.bridgeAssociationKey, bridge, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         return bridge
     }
 
     /// Remove Bridge And Reset, All the handlers will be removed
     func removeBridge() {
-        if let bridge = objc_getAssociatedObject(self, &STPrivateStatic.bridgeKey) as? Bridge {
+        if let bridge = objc_getAssociatedObject(self, &STPrivateStatic.bridgeAssociationKey) as? Bridge {
             let userContentController = bridge.configuration.userContentController
             userContentController.removeScriptMessageHandler(forName: Bridge.name)
         }
-        objc_setAssociatedObject(self, &STPrivateStatic.bridgeKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &STPrivateStatic.bridgeAssociationKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 }
 
