@@ -79,6 +79,18 @@ extension APIRequest {
         try await send(call.call, parameters: call.parameters, with: provider)
     }
 
+    /// Sends a JSON-RPC request whose `result` may legally be `null`.
+    /// This is required by `eth_getTransactionReceipt` for pending transactions.
+    public static func sendNullableRequest<Result: Decodable>(
+        with provider: Web3Provider,
+        for call: APIRequest
+    ) async throws -> NullableAPIResponse<Result> {
+        let body = RequestBody(method: call.call, params: call.parameters)
+        let urlRequest = setupRequest(for: body, with: provider)
+        let data = try await send(uRLRequest: urlRequest, with: provider.session)
+        return try JSONDecoder().decode(NullableAPIResponse<Result>.self, from: data)
+    }
+
     static func setupRequest(for body: RequestBody, with provider: Web3Provider) -> URLRequest {
         var urlRequest = URLRequest(url: provider.url, cachePolicy: .reloadIgnoringCacheData)
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")

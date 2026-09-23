@@ -27,9 +27,20 @@ public extension IEth {
 }
 
 public extension IEth {
-    func transactionReceipt(_ txHash: Data) async throws -> TransactionReceipt {
+    func transactionReceiptIfAvailable(_ txHash: Data) async throws -> TransactionReceipt? {
         let request = APIRequest.getTransactionReceipt(txHash.toHexString().addHexPrefix())
-        return try await APIRequest.sendRequest(with: provider, for: request).result
+        let response: NullableAPIResponse<TransactionReceipt> = try await APIRequest.sendNullableRequest(
+            with: provider,
+            for: request
+        )
+        return response.result
+    }
+
+    func transactionReceipt(_ txHash: Data) async throws -> TransactionReceipt {
+        guard let receipt = try await transactionReceiptIfAvailable(txHash) else {
+            throw Web3Error.processingError(desc: "Transaction receipt is not available yet")
+        }
+        return receipt
     }
 }
 

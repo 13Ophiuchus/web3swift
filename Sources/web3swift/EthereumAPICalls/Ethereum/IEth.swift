@@ -33,4 +33,5 @@ public protocol IEth {
 
     func transactionDetails(_ txHash: Data) async throws -> TransactionDetails
     func transactionReceipt(_ txHash: Data) async throws -> TransactionReceipt
+    func transactionReceiptIfAvailable(_ txHash: Data) async throws -> TransactionReceipt?
 }

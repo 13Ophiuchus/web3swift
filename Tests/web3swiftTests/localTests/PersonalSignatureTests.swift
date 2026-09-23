@@ -21,7 +21,7 @@ class PersonalSignatureTests: XCTestCase {
         let expectedAddress = keystoreManager.addresses![0]
 
         let signature = try await web3.personal.signPersonalMessage(message: message.data(using: .utf8)!, from: expectedAddress, password: "")
-        let unmarshalledSignature = SECP256K1.unmarshalSignature(signatureData: signature)!
+        XCTAssertNotNil(SECP256K1.unmarshalSignature(signatureData: signature))
         let signer = web3.personal.recoverAddress(message: message.data(using: .utf8)!, signature: signature)
         XCTAssert(expectedAddress == signer, "Failed to sign personal message")
     }
@@ -41,7 +41,7 @@ class PersonalSignatureTests: XCTestCase {
         let deployResult = try await deployTx.writeToChain(password: "web3swift", policies: policies, sendRaw: false)
         let txHash = Data.fromHex(deployResult.hash.stripHexPrefix())!
 
-        Thread.sleep(forTimeInterval: 1.0)
+        try await Task.sleep(nanoseconds: 1_000_000_000)
 
         let receipt = try await web3.eth.transactionReceipt(txHash)
 

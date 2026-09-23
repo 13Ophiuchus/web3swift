@@ -36,7 +36,7 @@ class TestHelpers {
         let result = try await deployTx.writeToChain(password: "web3swift", policies: policies, sendRaw: false)
         let txHash = Data.fromHex(result.hash.stripHexPrefix())!
 
-        Thread.sleep(forTimeInterval: 1.0)
+        try await Task.sleep(nanoseconds: 1_000_000_000)
 
         let receipt = try await web3.eth.transactionReceipt(txHash)
 

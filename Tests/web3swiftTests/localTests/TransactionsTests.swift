@@ -652,7 +652,7 @@ class TransactionsTests: XCTestCase {
             let result = try await writeTX.writeToChain(password: "", policies: policies, sendRaw: false)
             let txHash = Data.fromHex(result.hash.stripHexPrefix())!
 
-            Thread.sleep(forTimeInterval: 1.0)
+            try await Task.sleep(nanoseconds: 1_000_000_000)
 
             let receipt = try await web3.eth.transactionReceipt(txHash)
 
@@ -665,7 +665,7 @@ class TransactionsTests: XCTestCase {
                 break
             }
 
-            let details = try await web3.eth.transactionDetails(txHash)
+            _ = try await web3.eth.transactionDetails(txHash)
 
             // FIXME: Re-enable this test.
 //            XCTAssertEqual(details.transaction.gasLimit, BigUInt(78423))

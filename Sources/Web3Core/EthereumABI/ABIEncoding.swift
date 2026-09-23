@@ -465,25 +465,85 @@ public extension ABIEncoder {
         if let v = value as? Bool {
             return Data(v ? [0b1] : [0b0])
         } else if let v = value as? Int {
-            return ABIEncoder.convertToData(BigInt(exactly: v)?.abiEncode(bits: 256)!)!
+            guard let encoded = BigInt(exactly: v)?.abiEncode(bits: 256) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to ABI-encode Int value \(v)")
+            }
+            guard let data = ABIEncoder.convertToData(encoded) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to convert encoded Int to Data")
+            }
+            return data
         } else if let v = value as? Int8 {
-            return ABIEncoder.convertToData(BigInt(exactly: v)?.abiEncode(bits: 8))!
+            guard let encoded = BigInt(exactly: v)?.abiEncode(bits: 8) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to ABI-encode Int8 value \(v)")
+            }
+            guard let data = ABIEncoder.convertToData(encoded) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to convert encoded Int8 to Data")
+            }
+            return data
         } else if let v = value as? Int16 {
-            return ABIEncoder.convertToData(BigInt(exactly: v)?.abiEncode(bits: 16)!)!
+            guard let encoded = BigInt(exactly: v)?.abiEncode(bits: 16) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to ABI-encode Int16 value \(v)")
+            }
+            guard let data = ABIEncoder.convertToData(encoded) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to convert encoded Int16 to Data")
+            }
+            return data
         } else if let v = value as? Int32 {
-            return ABIEncoder.convertToData(BigInt(exactly: v)?.abiEncode(bits: 32)!)!
+            guard let encoded = BigInt(exactly: v)?.abiEncode(bits: 32) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to ABI-encode Int32 value \(v)")
+            }
+            guard let data = ABIEncoder.convertToData(encoded) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to convert encoded Int32 to Data")
+            }
+            return data
         } else if let v = value as? Int64 {
-            return ABIEncoder.convertToData(BigInt(exactly: v)?.abiEncode(bits: 64)!)!
+            guard let encoded = BigInt(exactly: v)?.abiEncode(bits: 64) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to ABI-encode Int64 value \(v)")
+            }
+            guard let data = ABIEncoder.convertToData(encoded) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to convert encoded Int64 to Data")
+            }
+            return data
         } else if let v = value as? UInt {
-            return ABIEncoder.convertToData(BigUInt(exactly: v)?.abiEncode(bits: 256)!)!
+            guard let encoded = BigUInt(exactly: v)?.abiEncode(bits: 256) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to ABI-encode UInt value \(v)")
+            }
+            guard let data = ABIEncoder.convertToData(encoded) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to convert encoded UInt to Data")
+            }
+            return data
         } else if let v = value as? UInt8 {
-            return ABIEncoder.convertToData(BigUInt(exactly: v)?.abiEncode(bits: 8)!)!
+            guard let encoded = BigUInt(exactly: v)?.abiEncode(bits: 8) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to ABI-encode UInt8 value \(v)")
+            }
+            guard let data = ABIEncoder.convertToData(encoded) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to convert encoded UInt8 to Data")
+            }
+            return data
         } else if let v = value as? UInt16 {
-            return ABIEncoder.convertToData(BigUInt(exactly: v)?.abiEncode(bits: 16)!)!
+            guard let encoded = BigUInt(exactly: v)?.abiEncode(bits: 16) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to ABI-encode UInt16 value \(v)")
+            }
+            guard let data = ABIEncoder.convertToData(encoded) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to convert encoded UInt16 to Data")
+            }
+            return data
         } else if let v = value as? UInt32 {
-            return ABIEncoder.convertToData(BigUInt(exactly: v)?.abiEncode(bits: 32)!)!
+            guard let encoded = BigUInt(exactly: v)?.abiEncode(bits: 32) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to ABI-encode UInt32 value \(v)")
+            }
+            guard let data = ABIEncoder.convertToData(encoded) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to convert encoded UInt32 to Data")
+            }
+            return data
         } else if let v = value as? UInt64 {
-            return ABIEncoder.convertToData(BigUInt(exactly: v)?.abiEncode(bits: 64)!)!
+            guard let encoded = BigUInt(exactly: v)?.abiEncode(bits: 64) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to ABI-encode UInt64 value \(v)")
+            }
+            guard let data = ABIEncoder.convertToData(encoded) else {
+                throw Web3Error.inputError(desc: "SoliditySha3: failed to convert encoded UInt64 to Data")
+            }
+            return data
         } else if let data = ABIEncoder.convertToData(value) {
             return data
         }

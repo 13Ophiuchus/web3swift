@@ -143,10 +143,12 @@ class AdvancedABIv2Tests: LocalTestCase {
         let contract = web3.contract(abiString, at: contractAddress, abiVersion: 2)
         XCTAssert(contract != nil)
         let allAddresses = try await web3.eth.ownedAccounts()
-        let balance = try await web3.eth.getBalance(for: allAddresses[0])
+        _ = try await web3.eth.getBalance(for: allAddresses[0])
         let writeOperation = contract?.createWriteOperation("setFlagData", parameters: ["abcdefg"])
         writeOperation?.transaction.from = allAddresses[0]
-        try await writeOperation?.writeToChain(password: "web3swift", policies: Policies(gasLimitPolicy: .manual(3000000)), sendRaw: false)
+        let writeResult = try await writeOperation?.writeToChain(password: "web3swift", policies: Policies(gasLimitPolicy: .manual(3000000)), sendRaw: false)
+        let transactionHash = try XCTUnwrap(Data.fromHex(try XCTUnwrap(writeResult).hash.stripHexPrefix()))
+        _ = try await TransactionPollingTask(transactionHash: transactionHash, web3Instance: web3).wait()
         // MARK: Read data from ABI flow
         // MARK: - Encoding ABI Data flow
         let tx = contract?.createReadOperation("getFlagData")

@@ -25,7 +25,7 @@ class UserCases: XCTestCase {
         let readTransaction = contract.createReadOperation("balanceOf", parameters: [account])!
         readTransaction.transaction.from = account
         let response = try await readTransaction.callContractMethod()
-        let balance = response["0"] as? BigUInt
+        XCTAssertNotNil(response["0"] as? BigUInt)
 
     }
 
@@ -83,7 +83,7 @@ class UserCases: XCTestCase {
         let result = try await deployTx.writeToChain(password: "web3swift", policies: policies, sendRaw: false)
         let txHash = Data.fromHex(result.hash.stripHexPrefix())!
 
-        Thread.sleep(forTimeInterval: 1.0)
+        try await Task.sleep(nanoseconds: 1_000_000_000)
 
         let receipt = try await web3.eth.transactionReceipt(txHash)
 
@@ -104,7 +104,7 @@ class UserCases: XCTestCase {
     func testNonBatchedRequest() async throws {
         let web3 = try await Web3.new(LocalTestCase.url)
         let address = EthereumAddress("0xe22b8979739D724343bd002F9f432F5990879901")!
-        let balanceResult = try await web3.eth.getBalance(for: address)
+        _ = try await web3.eth.getBalance(for: address)
 
     }
 }
