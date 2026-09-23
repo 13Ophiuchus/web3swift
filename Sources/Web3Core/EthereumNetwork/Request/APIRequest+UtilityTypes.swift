@@ -51,3 +51,12 @@ struct RequestBody: Encodable {
          return try! JSONEncoder().encode(self)
      }
 }
+
+
+/// A JSON-RPC response whose result may be `null`, as permitted by methods
+/// such as `eth_getTransactionReceipt` for a transaction that is not mined yet.
+public struct NullableAPIResponse<Result: Decodable>: Decodable {
+    public let id: Int
+    public let jsonrpc: String
+    public let result: Result?
+}

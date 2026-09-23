@@ -28,17 +28,19 @@ class BasicLocalNodeTests: LocalTestCase {
         let result = try await deployTx.writeToChain(password: "web3swift", policies: policies, sendRaw: false)
         let txHash = result.hash.stripHexPrefix()
 
-        while true {
-            let receipt = try await web3.eth.transactionReceipt(Data.fromHex(txHash)!)
-            switch receipt.status {
-            case .notYetProcessed:
-                continue
-            case .failed:
-                XCTFail("Failed to deploy a contract!")
-            case .ok:
-                XCTAssertNotNil(receipt.contractAddress)
-                return
-            }
+        let transactionHash = try XCTUnwrap(Data.fromHex(txHash))
+        let receipt = try await TransactionPollingTask(
+            transactionHash: transactionHash,
+            web3Instance: web3
+        ).wait()
+
+        switch receipt.status {
+        case .failed:
+            XCTFail("Failed to deploy a contract!")
+        case .ok:
+            XCTAssertNotNil(receipt.contractAddress)
+        case .notYetProcessed:
+            XCTFail("Polling returned an unprocessed transaction receipt.")
         }
     }
 
@@ -61,7 +63,7 @@ class BasicLocalNodeTests: LocalTestCase {
         let result = try await sendTx.writeToChain(password: "web3swift", sendRaw: false)
         let txHash = Data.fromHex(result.hash.stripHexPrefix())!
 
-        Thread.sleep(forTimeInterval: 1.0)
+        try await Task.sleep(nanoseconds: 1_000_000_000)
 
         let receipt = try await web3.eth.transactionReceipt(txHash)
 

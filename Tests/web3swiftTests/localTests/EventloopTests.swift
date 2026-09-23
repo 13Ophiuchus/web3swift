@@ -31,6 +31,6 @@ class EventloopTests: XCTestCase {
         web3main.eventLoop.monitoredProperties.append(monitoredProperty)
         web3main.eventLoop.start(5)
 
-        await waitForExpectations(timeout: 60, handler: nil)
+        await fulfillment(of: [expectation], timeout: 60)
     }
 }

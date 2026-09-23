@@ -189,7 +189,7 @@ extension Bridge: WKScriptMessageHandler {
 public extension WKWebView {
 
     private struct STPrivateStatic {
-        fileprivate static var bridgeKey = "STPrivateStatic.bridgeKey"
+        fileprivate static var bridgeKey: UInt8 = 0
     }
 
     /// Bridge for WKWebView and JavaScript. Initialize `lazy`

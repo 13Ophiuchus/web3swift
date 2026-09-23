@@ -80,11 +80,12 @@ class EventTests: XCTestCase {
 }
 
 private func ==(lhs: EventFilterParameters.Topic?, rhs: String?) -> Bool {
-    if let lhs = lhs, case .string(let string) = lhs {
+    switch (lhs, rhs) {
+    case let (.some(.string(string)), .some(rhs)):
         return string == rhs
-    }
-    if lhs == nil && rhs == nil {
+    case (nil, nil):
         return true
+    default:
+        return false
     }
-    return false
 }

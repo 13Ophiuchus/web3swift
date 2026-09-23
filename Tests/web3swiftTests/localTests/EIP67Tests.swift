@@ -17,7 +17,7 @@ class EIP67Tests: LocalTestCase {
         eip67Data.gasLimit = BigUInt(21000)
         eip67Data.amount = BigUInt("1000000000000000000")
         //        eip67Data.data =
-        let encoding = eip67Data.toString()
+        _ = eip67Data.toString()
 
     }
 

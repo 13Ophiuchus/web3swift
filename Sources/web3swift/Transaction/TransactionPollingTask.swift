@@ -50,9 +50,8 @@ final public class TransactionPollingTask {
     public func wait() async throws -> TransactionReceipt {
         let startTime = Date()
         while true {
-            let transactionReceipt = try await web3Instance.eth.transactionReceipt(transactionHash)
-
-            if transactionReceipt.status != .notYetProcessed {
+            if let transactionReceipt = try await web3Instance.eth.transactionReceiptIfAvailable(transactionHash),
+               transactionReceipt.status != .notYetProcessed {
                 return transactionReceipt
             }
 
@@ -60,7 +59,7 @@ final public class TransactionPollingTask {
                 delayUnit = delayUnit.nextDelayUnit
             }
 
-            try await Task.sleep(nanoseconds: delayUnit.rawValue)
+            try await Task.sleep(nanoseconds: delayUnit.rawValue * 1_000_000_000)
         }
     }
 }
