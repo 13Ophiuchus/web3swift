@@ -340,23 +340,17 @@ extension SECP256K1 {
     }
 
     internal static func randomBytes(length: Int) -> Data? {
-        for _ in 0...1024 {
-            var data = Data(repeating: 0, count: length)
-            let result = data.withUnsafeMutableBytes { mutableRBBytes -> Int32? in
-                if let mutableRBytes = mutableRBBytes.baseAddress, mutableRBBytes.count > 0 {
-                    let mutableBytes = mutableRBytes.assumingMemoryBound(to: UInt8.self)
-                    return SecRandomCopyBytes(kSecRandomDefault, length, mutableBytes)
-                } else {
-                    return nil
+        var data = Data(repeating: 0, count: length)
+        var generator = SystemRandomNumberGenerator()
+        data.withUnsafeMutableBytes { mutableRBBytes -> Void in
+            if let mutableRBytes = mutableRBBytes.baseAddress, mutableRBBytes.count > 0 {
+                let mutableBytes = mutableRBytes.assumingMemoryBound(to: UInt8.self)
+                for i in 0..<length {
+                    mutableBytes[i] = UInt8.random(in: 0...255, using: &generator)
                 }
             }
-            if let res = result, res == errSecSuccess {
-                return data
-            } else {
-                continue
-            }
         }
-        return nil
+        return data
     }
 
     internal static func toByteArray<T>(_ value: T) -> [UInt8] {

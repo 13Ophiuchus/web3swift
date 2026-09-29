@@ -43,9 +43,9 @@ public extension Data {
 
     /**
      Generates an array of random bytes of the specified length.
-     This function uses `SecRandomCopyBytes` to generate random bytes returning it as a `Data` object.
+     This function uses `SystemRandomNumberGenerator` to generate random bytes returning it as a `Data` object. This works on both Apple platforms and Linux.
      If an error occurs during random bytes generation, the function returns `nil`.
-     Error occurs only if `SecRandomCopyBytes` returns status that is not `errSecSuccess`.
+     This implementation cannot fail, so the optional return type is retained only for API compatibility.
      See [all status codes](https://developer.apple.com/documentation/security/1542001-security_framework_result_codes) for possible error reasons.
      Note: in v4 of web3swift this function will be deprecated and a new implementation will be provided that will throw occurred error.
      - Parameter length: The number of random bytes to generate.
@@ -53,12 +53,12 @@ public extension Data {
      - Returns: optional `Data` object containing the generated random bytes, or `nil` if an error occurred during generation.
      */
     static func randomBytes(length: Int) -> Data? {
-        var entropyBytes = [UInt8](repeating: 0, count: length)
-        let status = SecRandomCopyBytes(kSecRandomDefault, entropyBytes.count, &entropyBytes)
-        guard status == errSecSuccess else {
-            return nil
+        var generator = SystemRandomNumberGenerator()
+        var bytes = [UInt8](repeating: 0, count: length)
+        for i in 0..<length {
+            bytes[i] = UInt8.random(in: 0...255, using: &generator)
         }
-        return Data(entropyBytes)
+        return Data(bytes)
     }
 
     func bitsInRange(_ startingBit: Int, _ length: Int) -> UInt64? { // return max of 8 bytes for simplicity, non-public
