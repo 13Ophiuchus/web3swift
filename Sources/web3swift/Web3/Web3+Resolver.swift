@@ -75,7 +75,7 @@ public class PolicyResolver {
         switch policy {
         case .pending, .latest, .earliest:
             guard let address = tx.from ?? tx.sender else { throw Web3Error.valueError() }
-            let request: APIRequest = .getTransactionCount(address.address, tx.callOnBlock ?? .latest)
+            let request: APIRequest = .getTransactionCount(address.address, policy)
             let response: APIResponse<BigUInt> = try await APIRequest.sendRequest(with: provider, for: request)
             return response.result
         case .exact(let value):

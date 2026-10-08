@@ -13,22 +13,34 @@ class LocalTestCase: XCTestCase {
     static let keyStoreManager: KeystoreManager = KeystoreManager([try! EthereumKeystoreV3(password: "web3swift")!])
 
     override func setUp() async throws {
-        let web3 = try! await Web3.new(LocalTestCase.url)
-
+        let web3 = try await Web3.new(LocalTestCase.url)
         let block = try await web3.eth.blockNumber()
         guard block < 25 else { return }
 
-        let allAddresses = try! await web3.eth.ownedAccounts()
-        let sendToAddress = allAddresses[0]
-        let contract = web3.contract(Web3.Utils.coldWalletABI, at: sendToAddress, abiVersion: 2)
+        let allAddresses = try await web3.eth.ownedAccounts()
+        let address = try XCTUnwrap(allAddresses.first)
+        let contract = try XCTUnwrap(
+            web3.contract(Web3.Utils.coldWalletABI, at: address, abiVersion: 2)
+        )
         let value = try XCTUnwrap(Utilities.parseToBigUInt("1.0", units: .ether))
-        let from = allAddresses[0]
-        let writeTX = contract!.createWriteOperation("fallback")!
-        writeTX.transaction.from = from
-        writeTX.transaction.value = value
-        let policies = Policies(gasLimitPolicy: .manual(78423), gasPricePolicy: .manual(20000000000))
+        let policies = Policies(
+            noncePolicy: .pending,
+            gasLimitPolicy: .manual(78_423),
+            gasPricePolicy: .manual(20_000_000_000)
+        )
+
         for _ in block..<25 {
-            _ = try! await writeTX.writeToChain(password: "", policies: policies, sendRaw: false)
+            let writeTransaction = try XCTUnwrap(
+                contract.createWriteOperation("fallback")
+            )
+            writeTransaction.transaction.from = address
+            writeTransaction.transaction.value = value
+
+            _ = try await writeTransaction.writeToChain(
+                password: "",
+                policies: policies,
+                sendRaw: false
+            )
         }
     }
 

@@ -146,7 +146,7 @@ class AdvancedABIv2Tests: LocalTestCase {
         _ = try await web3.eth.getBalance(for: allAddresses[0])
         let writeOperation = contract?.createWriteOperation("setFlagData", parameters: ["abcdefg"])
         writeOperation?.transaction.from = allAddresses[0]
-        let writeResult = try await writeOperation?.writeToChain(password: "web3swift", policies: Policies(gasLimitPolicy: .manual(3000000)), sendRaw: false)
+        let writeResult = try await writeOperation?.writeToChain(password: "web3swift", policies: Policies(noncePolicy: .pending, gasLimitPolicy: .manual(3000000)), sendRaw: false)
         let transactionHash = try XCTUnwrap(Data.fromHex(try XCTUnwrap(writeResult).hash.stripHexPrefix()))
         _ = try await TransactionPollingTask(transactionHash: transactionHash, web3Instance: web3).wait()
         // MARK: Read data from ABI flow
