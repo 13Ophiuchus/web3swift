@@ -24,7 +24,7 @@ let package = Package(
         .target(
             name: "web3swift",
             dependencies: ["Web3Core", "BigInt", .product(name: "P256K", package: "swift-secp256k1")],
-            exclude: ["Browser/Bridge.swift", "Utils/EIP/EIP67Code.swift"],
+            exclude: ["Browser/Bridge.swift"],
             resources: [
                 .copy("./Browser/browser.js"),
                 .copy("./Browser/browser.min.js"),

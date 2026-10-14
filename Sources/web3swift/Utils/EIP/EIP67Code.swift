@@ -4,7 +4,9 @@
 //
 
 import Foundation
+#if canImport(CoreImage)
 import CoreImage
+#endif
 import BigInt
 import Web3Core
 
@@ -77,23 +79,30 @@ extension Web3 {
             return mainPart
         }
 
+#if canImport(CoreImage)
         public func toImage(scale: Double = 1.0) -> CIImage {
-            return EIP67CodeGenerator.createImage(from: self, scale: scale)
+            EIP67CodeGenerator.createImage(from: self, scale: scale)
         }
+#endif
     }
 
+#if canImport(CoreImage)
     public struct EIP67CodeGenerator {
 
         public static func createImage(from: EIP67Code, scale: Double = 1.0) -> CIImage {
-            guard let string = from.toString().addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else {return CIImage()}
-            guard let data = string.data(using: .utf8, allowLossyConversion: false) else {return CIImage()}
-            let filter = CIFilter(name: "CIQRCodeGenerator", parameters: ["inputMessage": data, "inputCorrectionLevel": "L"])
-            guard var image = filter?.outputImage else {return CIImage()}
+            guard let string = from.toString().addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else { return CIImage() }
+            guard let data = string.data(using: .utf8, allowLossyConversion: false) else { return CIImage() }
+            let filter = CIFilter(
+                name: "CIQRCodeGenerator",
+                parameters: ["inputMessage": data, "inputCorrectionLevel": "L"]
+            )
+            guard var image = filter?.outputImage else { return CIImage() }
             let transformation = CGAffineTransform(scaleX: CGFloat(scale), y: CGFloat(scale))
             image = image.transformed(by: transformation)
             return image
         }
     }
+#endif
 
     public struct EIP67CodeParser {
         public static func parse(_ data: Data) -> EIP67Code? {
